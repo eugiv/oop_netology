@@ -1,3 +1,4 @@
+import random
 class Student:
     def __init__(self, name, surname, gender):
         self.name = name
@@ -11,17 +12,17 @@ class Student:
         if(isinstance(lecturer, Lecturer) and course in self.courses_in_progress
                 and course in lecturer.courses_attached):
             if course in lecturer.grades:
-                lecturer.grades[course] += [grade]
+                lecturer.grades[course] += grade
             else:
-                lecturer.grades[course] = [grade]
+                lecturer.grades[course] = grade
         else:
             return "Error"
 
     def __str__(self):
         return (f'Name: {self.name}\n'
                 f'Surname: {self.surname}\n'
-                f'Courses in progress: {" ".join(self.courses_in_progress)}\n'
-                f'Finished courses: {" ".join(self.finished_courses)}')
+                f'Courses in progress: {", ".join(self.courses_in_progress)}\n'
+                f'Finished courses: {", ".join(self.finished_courses)}')
 
 
 class Mentor:
@@ -53,9 +54,9 @@ class Reviewer(Mentor):
         if(isinstance(student, Student) and course in self.courses_attached
                 and course in student.courses_in_progress):
             if course in student.grades:
-                student.grades[course] += [grade]
+                student.grades[course] += grade
             else:
-                student.grades[course] = [grade]
+                student.grades[course] = grade
         else:
             return "Error"
 
@@ -63,14 +64,17 @@ class Reviewer(Mentor):
         return (f'Name: {self.name}\n'
                 f'Surname: {self.surname}')
 
-students_dict = {"name": ["Ruoy", "John", "Emma"], "surname": ["Eman", "Smith", "Watson"],
-                 "gender": ["male", "male", "female"]}
 
-reviewers_dict = {"name": ["Frank", "Elvis"], "surname": ["Sinatra", "Presley"], "gender": ["male", "male"]}
+students_dict = {"name": ["Ruoy", "John", "Emma", "Elton"], "surname": ["Eman", "Smith", "Watson", "John"],
+                 "gender": ["male", "male", "female", "male"]}
 
-lecturer_dict = {"name": ["Harland", "Ronald"], "surname": ["Sanders", "McDonald"], "gender": ["male", "non_binary"]}
+reviewers_dict = {"name": ["Frank", "Elvis", "Morgan"], "surname": ["Sinatra", "Presley", "Freeman"],
+                  "gender": ["male", "male", "male"]}
 
-initial_course = ["Python", "Java", "Python"]
+lecturer_dict = {"name": ["Harland", "Ronald", "Marge"], "surname": ["Sanders", "McDonald", "Simpson"],
+                 "gender": ["male", "non_binary", "female"]}
+
+initial_course = ["Python", "Java", "Python", "Kotlin"]
 
 
 def cls_inst_maker(cls, data):
@@ -87,31 +91,51 @@ def cls_inst_maker(cls, data):
     return Person
 
 
+def random_grades(begin, end, k):
+    return random.choices(range(begin, end), k=k)
+
+
 students = cls_inst_maker(Student, students_dict)
 reviewers = cls_inst_maker(Reviewer, reviewers_dict)
 lecturers = cls_inst_maker(Lecturer, lecturer_dict)
 
-# assigning courses to students
+# assigning basic course to students
 for stud_obj in zip(students.values(), initial_course):
     stud_obj[0].courses_in_progress += [stud_obj[1]]
 
-# assigning courses to reviewers
+# assigning basic course to reviewers
 for rew_obj in zip(reviewers.values(), initial_course):
     rew_obj[0].courses_attached += [rew_obj[1]]
 
-# assigning courses to lecturers
+# assigning basic course to lecturers
 for lec_obj in zip(lecturers.values(), initial_course):
     lec_obj[0].courses_attached += [lec_obj[1]]
 
-# adding course to a lecturer manually
-lecturers["lecturer_0"].courses_attached += ["Kotlin"]
+# custom manual courses adding
+students["student_1"].finished_courses += ["Introduction to Docker"]
+students["student_3"].finished_courses += ["Advanced Git"]
+students["student_3"].courses_in_progress += ["Java"]
+lecturers["lecturer_0"].courses_attached += ["Kotlin", "Java"]
+lecturers["lecturer_2"].courses_attached += ["Kotlin"]
+reviewers["reviewer_1"].courses_attached += ["Kotlin", "Python"]
 
 # reviewers grade students
-reviewers["reviewer_0"].rate_hw_rew(students["student_2"], "Python", 10)
-reviewers["reviewer_1"].rate_hw_rew(students["student_1"], "Java", 8)
+reviewers["reviewer_0"].rate_hw_rew(students["student_2"], "Python", random_grades(3, 10, 10))
+reviewers["reviewer_1"].rate_hw_rew(students["student_1"], "Java", random_grades(3, 10, 20))
+reviewers["reviewer_1"].rate_hw_rew(students["student_3"], "Java", random_grades(3, 10, 15))
+reviewers["reviewer_1"].rate_hw_rew(students["student_3"], "Kotlin", random_grades(3, 10, 15))
+reviewers["reviewer_2"].rate_hw_rew(students["student_0"], "Python", random_grades(3, 10, 25))
+
 
 # students grade lecturers
-students["student_1"].rate_lc(lecturers["lecturer_1"], "Java", 10)
-students["student_2"].rate_lc(lecturers["lecturer_0"], "Python", 9)
+students["student_1"].rate_lc(lecturers["lecturer_1"], "Java", random_grades(3, 10, 10))
+students["student_2"].rate_lc(lecturers["lecturer_0"], "Python", random_grades(3, 10, 15))
+students["student_3"].rate_lc(lecturers["lecturer_2"], "Kotlin", random_grades(3, 10, 10))
 
-print(students["student_1"])
+def homework_avg_grade():
+    courses_list = []
+    for stud in students.values():
+        courses_list += stud.grades.values()
+    return courses_list
+
+print(homework_avg_grade())

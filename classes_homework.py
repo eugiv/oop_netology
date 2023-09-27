@@ -41,6 +41,12 @@ class Student:
     def __lt__(self, other):
         return avg_grade_glob(self.grades) < avg_grade_glob(other.grades)
 
+    def __eq__(self, other):
+        return avg_grade_glob(self.grades) == avg_grade_glob(other.grades)
+
+    def __gt__(self, other):
+        return avg_grade_glob(self.grades) > avg_grade_glob(other.grades)
+
     def __str__(self):
         return (f'Name: {self.name}\n'
                 f'Surname: {self.surname}\n'
@@ -70,6 +76,12 @@ class Lecturer(Mentor):
 
     def __lt__(self, other):
         return avg_grade_glob(self.grades) < avg_grade_glob(other.grades)
+
+    def __eq__(self, other):
+        return avg_grade_glob(self.grades) == avg_grade_glob(other.grades)
+
+    def __gt__(self, other):
+        return avg_grade_glob(self.grades) > avg_grade_glob(other.grades)
 
     def __str__(self):
         return (f'Name: {self.name}\n'
@@ -175,10 +187,12 @@ students["student_0"].rate_lc(lecturers["lecturer_2"], "Python", random_grades(3
 
 # grades comparison
 def grades_compare(person1, person2):
-    if person1 < person2 is True:
+    if person1 < person2:
         print(f"{person1.surname} has better average grades than {person2.surname}", "\n")
-    else:
+    elif person1 > person2:
         print(f"{person2.surname} has better average grades than {person1.surname}", "\n")
+    else:
+        print(f"{person2.surname} and {person1.surname} are even", "\n")
 
 
 # comparing students average grades

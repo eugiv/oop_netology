@@ -35,13 +35,16 @@ class Student:
         else:
             return "Error"
 
-    def avg_grades(self):
-        return avg_grade_glob(self.grades)
+    # def avg_grades(self):
+    #     return avg_grade_glob(self.grades) # replaced with magic func below
+
+    def __lt__(self, other):
+        return avg_grade_glob(self.grades) < avg_grade_glob(other.grades)
 
     def __str__(self):
         return (f'Name: {self.name}\n'
                 f'Surname: {self.surname}\n'
-                f'Average homework grades: {self.avg_grades()}\n'
+                f'Average homework grades: {avg_grade_glob(self.grades)}\n'
                 f'Courses in progress: {", ".join(self.courses_in_progress)}\n'
                 f'Finished courses: {", ".join(self.finished_courses)}')
 
@@ -62,13 +65,16 @@ class Lecturer(Mentor):
         super().__init__(name, surname, gender, courses_attached=None)
         self.grades = {}
 
-    def avg_grades(self):
-        return avg_grade_glob(self.grades)
+    # def avg_grades(self):
+    #     return avg_grade_glob(self.grades) # replaced with magic func below
+
+    def __lt__(self, other):
+        return avg_grade_glob(self.grades) < avg_grade_glob(other.grades)
 
     def __str__(self):
         return (f'Name: {self.name}\n'
                 f'Surname: {self.surname}\n'
-                f'Average lecturers grade: {self.avg_grades()}')
+                f'Average lecturers grade: {avg_grade_glob(self.grades)}')
 
 
 class Reviewer(Mentor):
@@ -169,12 +175,10 @@ students["student_0"].rate_lc(lecturers["lecturer_2"], "Python", random_grades(3
 
 # grades comparison
 def grades_compare(person1, person2):
-    if person1.avg_grades() > person2.avg_grades():
-        print(f"{person1.surname} ({person1.avg_grades()}) has better average grades than {person2.surname} "
-              f"({person2.avg_grades()})", "\n")
+    if person1 < person2:
+        print(f"{person1.surname} has better average grades than {person2.surname}", "\n")
     else:
-        print(f"{person2.surname} ({person2.avg_grades()}) has better average grades than {person1.surname} "
-              f"({person1.avg_grades()})", "\n")
+        print(f"{person2.surname} has better average grades than {person1.surname}", "\n")
 
 
 # comparing students average grades

@@ -175,7 +175,7 @@ students["student_0"].rate_lc(lecturers["lecturer_2"], "Python", random_grades(3
 
 # grades comparison
 def grades_compare(person1, person2):
-    if person1 < person2:
+    if person1 < person2 is True:
         print(f"{person1.surname} has better average grades than {person2.surname}", "\n")
     else:
         print(f"{person2.surname} has better average grades than {person1.surname}", "\n")
